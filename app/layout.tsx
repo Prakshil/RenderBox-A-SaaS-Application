@@ -19,6 +19,12 @@ const sora = Sora({
 export const metadata: Metadata = {
   title: "RenderBox - Transform Your Media",
   description: "Upload, transform, and optimize your videos and images with Cloudinary",
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/icon.svg',
+  },
 };
 
 export default function RootLayout({
