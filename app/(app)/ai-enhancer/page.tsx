@@ -107,31 +107,33 @@ export default function AiEnhancer() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start justify-center">
               <div className="flex flex-col items-center">
-                <CldImage
-                  width={320}
-                  height={400}
-                  src={uploadedImage}
-                  alt="Original"
-                  className="rounded-lg shadow object-cover w-[320px] h-[400px]"
-                />
+                <div className="w-full max-w-sm bg-base-200 rounded-lg p-2 flex items-center justify-center min-h-[200px]">
+                  <CldImage
+                    width={800}
+                    height={800}
+                    src={uploadedImage}
+                    alt="Original"
+                    className="rounded-lg shadow max-w-full max-h-[400px] w-auto h-auto object-contain"
+                  />
+                </div>
                 <p className="text-center mt-2 text-xs">Original</p>
               </div>
               <div className="flex flex-col items-center">
                 {isProcessing ? (
-                  <div className="flex flex-col items-center justify-center h-full">
+                  <div className="flex flex-col items-center justify-center min-h-[200px]">
                     <Loader2 className="animate-spin w-8 h-8 mb-2" />
                     <span>Processing...</span>
                   </div>
                 ) : resultImage ? (
                   <>
-                    <img
-                      ref={resultImgRef}
-                      width={320}
-                      height={400}
-                      src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/e_enhance/${resultImage}`}
-                      alt="Enhanced"
-                      className="rounded-lg shadow object-cover w-[320px] h-[400px]"
-                    />
+                    <div className="w-full max-w-sm bg-base-200 rounded-lg p-2 flex items-center justify-center min-h-[200px]">
+                      <img
+                        ref={resultImgRef}
+                        src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/e_enhance/${resultImage}`}
+                        alt="Enhanced"
+                        className="rounded-lg shadow max-w-full max-h-[400px] w-auto h-auto object-contain"
+                      />
+                    </div>
                     <button className="btn btn-secondary mt-4 w-3/4 mx-auto" onClick={handleDownload}>
                       Download Result
                     </button>

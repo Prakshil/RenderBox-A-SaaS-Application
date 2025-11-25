@@ -108,24 +108,26 @@ export default function BackgroundRemoval() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start justify-center">
               <div className="flex flex-col items-center">
-                <CldImage
-                  width={320}
-                  height={400}
-                  src={uploadedImage}
-                  alt="Original"
-                  className="rounded-lg shadow object-cover w-[320px] h-[400px]"
-                />
+                <div className="w-full max-w-sm bg-base-200 rounded-lg p-2 flex items-center justify-center min-h-[200px]">
+                  <CldImage
+                    width={800}
+                    height={800}
+                    src={uploadedImage}
+                    alt="Original"
+                    className="rounded-lg shadow max-w-full max-h-[400px] w-auto h-auto object-contain"
+                  />
+                </div>
                 <p className="text-center mt-2 text-xs">Original</p>
               </div>
               <div className="flex flex-col items-center">
                 {isProcessing ? (
-                  <div className="flex flex-col items-center justify-center h-full">
+                  <div className="flex flex-col items-center justify-center min-h-[200px]">
                     <Loader2 className="animate-spin w-8 h-8 mb-2" />
                     <span className="text-base-content/70">Processing...</span>
                   </div>
                 ) : resultImage ? (
                   <>
-                    <div className="relative w-[320px] h-[400px] flex items-center justify-center">
+                    <div className="relative w-full max-w-sm bg-base-200 rounded-lg p-2 flex items-center justify-center min-h-[200px]">
                       {resultLoading && (
                         <div className="absolute inset-0 flex items-center justify-center bg-base-100 bg-opacity-70 z-10 rounded-lg">
                           <span className="loading loading-spinner loading-lg text-primary"></span>
@@ -133,11 +135,9 @@ export default function BackgroundRemoval() {
                       )}
                       <img
                         ref={resultImgRef}
-                        width={320}
-                        height={400}
                         src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/e_background_removal/${resultImage}`}
                         alt="Background removal not possible for this image."
-                        className="rounded-lg shadow object-cover w-[320px] h-[400px]"
+                        className="rounded-lg shadow max-w-full max-h-[400px] w-auto h-auto object-contain"
                         onLoad={() => setResultLoading(false)}
                         onError={() => {
                           setResultLoading(false);
@@ -155,11 +155,6 @@ export default function BackgroundRemoval() {
                     </button>
                     <p className="text-center mt-2 text-xs">
                       {resultLoading ? '' : 'No Background'}
-                      {!resultLoading && (
-                        <span className="block text-error mt-2" style={{fontSize:'0.9em'}}>
-                          {/* If image fails to load, alt text will show visually-impaired users the error */}
-                        </span>
-                      )}
                     </p>
                   </>
                 ) : (
