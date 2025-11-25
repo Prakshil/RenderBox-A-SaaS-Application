@@ -19,7 +19,7 @@
 
 ---
 
-## 🤔 What is this sorcery?
+## 🤔 What is this ?
 
 **RenderBox** is a production-ready SaaS application that handles all the boring media processing stuff so you don't have to open Photoshop (we know you don't have a license anyway 👀).
 
