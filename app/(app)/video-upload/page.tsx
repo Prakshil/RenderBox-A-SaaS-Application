@@ -59,7 +59,7 @@ function VideoUpload() {
             })
             
             toast.success('Video uploaded successfully!')
-            router.push("/Home")
+            router.push("/home")
         } catch (error) {
             console.log(error)
             toast.error('Failed to upload video. Please try again.')
@@ -181,7 +181,7 @@ function VideoUpload() {
                   <button
                     type="button"
                     className="btn btn-ghost"
-                    onClick={() => router.push("/Home")}
+                    onClick={() => router.push("/home")}
                     disabled={isUploading}
                   >
                     Cancel

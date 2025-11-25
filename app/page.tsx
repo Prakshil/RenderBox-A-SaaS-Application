@@ -41,7 +41,7 @@ export default function Home() {
                 Start Free Trial
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
-              <Link href="/Home" className="btn btn-outline btn-lg">
+              <Link href="/home" className="btn btn-outline btn-lg">
                 View Demo
               </Link>
             </div>
