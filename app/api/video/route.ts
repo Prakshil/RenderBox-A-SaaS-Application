@@ -12,7 +12,21 @@ export async function GET(request: NextRequest) {
         const videos = await prisma.video.findMany({
             orderBy: { createdAt: "desc" },
         });
-        return NextResponse.json(videos);
+        
+        // Map database fields to frontend expected format
+        const mappedVideos = videos.map((video) => ({
+            id: video.id,
+            title: video.title,
+            description: video.description,
+            publicId: video.publicId,
+            originalSize: video.OrignalSize,
+            compressedSize: video.CompressedSize,
+            duration: video.duration,
+            createdAt: video.createdAt,
+            updatedAt: video.updatedAt,
+        }));
+        
+        return NextResponse.json(mappedVideos);
     } catch (error) {
         return NextResponse.json({ error: "Failed to fetch videos" }, { status: 500 });
     } finally {
