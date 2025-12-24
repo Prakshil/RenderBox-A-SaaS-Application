@@ -3,9 +3,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 import { auth } from '@clerk/nextjs/server';
 
+export const runtime = "nodejs";
+
 // Configuration
 cloudinary.config({
-    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME ?? process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET 
 });
@@ -16,13 +18,21 @@ interface CloudinaryUploadResult {
 }
 
 export async function POST(request: NextRequest) {
-    const {userId} = await auth()
-
-    if (!userId) {
-        return NextResponse.json({error: "Unauthorized"}, {status: 401})
-    }
-
     try {
+        const { userId } = await auth();
+
+        if (!userId) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        if(
+            !(process.env.CLOUDINARY_CLOUD_NAME ?? process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME) ||
+            !process.env.CLOUDINARY_API_KEY ||
+            !process.env.CLOUDINARY_API_SECRET
+        ){
+            return NextResponse.json({error: "Cloudinary credentials not found"}, {status: 500})
+        }
+
         const formData = await request.formData();
         const file = formData.get("file") as File | null;
 
@@ -55,8 +65,9 @@ export async function POST(request: NextRequest) {
         )
 
     } catch (error) {
-        console.log("UPload image failed", error)
-        return NextResponse.json({error: "Upload image failed"}, {status: 500})
+        console.log("Upload image failed", error)
+        const message = error instanceof Error ? error.message : "Unknown error";
+        return NextResponse.json({ error: "Upload image failed", details: message }, { status: 500 })
     }
 
 }

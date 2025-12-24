@@ -2,17 +2,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 import { auth } from '@clerk/nextjs/server';
-import { PrismaClient } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
+import { getPrisma } from "@/lib/prisma";
 
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
+export const runtime = "nodejs";
 
 // Configuration
 cloudinary.config({
-    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME ?? process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET // Click 'View Credentials' below to copy your API secret
 });
@@ -25,14 +21,14 @@ interface CloudinaryUploadResult {
 }
 
 export async function POST(request: NextRequest) {
-
-
     try {
-
-        //todo to check user
+        const { userId } = await auth();
+        if (!userId) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
 
     if(
-        !process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
+        !(process.env.CLOUDINARY_CLOUD_NAME ?? process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME) ||
         !process.env.CLOUDINARY_API_KEY ||
         !process.env.CLOUDINARY_API_SECRET
     ){
@@ -71,6 +67,7 @@ export async function POST(request: NextRequest) {
                 uploadStream.end(buffer)
             }
         )
+        const prisma = getPrisma();
         const video = await prisma.video.create({
             data: {
                 title,
@@ -85,10 +82,9 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(video)
 
     } catch (error) {
-        console.log("UPload video failed", error)
-        return NextResponse.json({error: "UPload video failed"}, {status: 500})
-    } finally{
-        await prisma.$disconnect()
+        console.log("Upload video failed", error)
+        const message = error instanceof Error ? error.message : "Unknown error";
+        return NextResponse.json({error: "Upload video failed", details: message}, {status: 500})
     }
 
 }
